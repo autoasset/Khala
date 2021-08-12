@@ -1,0 +1,17 @@
+{
+    "inputs": [
+        "./assets/icons"
+    ],
+    "outputs": {
+        "gif2x": "./coverter/gif2x",
+        "gif3x": "./coverter/gif3x",
+        "icon2x": "./coverter/icon2x",
+        "icon3x": "./coverter/icon3x",
+        "svg2pdf": "./coverter/svg2pdf",
+        "svg2xml": "./coverter/svg2xml",
+        "svg2iconfont": "./coverter/svg2iconfont",
+        "pdf": "./coverter/pdf",
+        "svg": "./coverter/svg",
+        "other": "./coverter/other"
+    }
+}
