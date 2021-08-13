@@ -6,12 +6,35 @@ import FilePath from "./FilePath";
 class IconCoverter {
 
     async runInFolder(folder: string, svgCoverter: (file: string, filename: string) => void) {
+
+        for (const exclude of config.exclude) {
+            if (folder.startsWith(exclude)) {
+                console.log("跳过路径: " + folder)
+                return
+            }
+        }
+
         console.log("正在处理文件夹: " + folder)
         for (const item of await fs.readdir(folder)) {
             if (item.startsWith('.')) {
                 continue
             }
+
             const path = FilePath.path(folder, item);
+
+            var isContinue = true
+            for (const exclude of config.exclude) {
+                if (path.startsWith(exclude)) {
+                    console.log("跳过路径: " + path)
+                    isContinue = false
+                    continue
+                }
+            }
+
+            if (!isContinue) {
+                continue
+            }
+
             if ((await fs.lstat(path)).isDirectory()) {
                 await this.runInFolder(path, svgCoverter)
             } else {

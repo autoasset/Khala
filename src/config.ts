@@ -90,15 +90,17 @@ class Outputs {
 class IconConfig {
 
     inputs: string[]
+    exclude: string[]
     outputs: Outputs
     products: Products
 
-    constructor(inputs: string[], outputs: Outputs, products: Products) {
-        this.inputs = inputs
-        this.outputs = outputs
-        this.products = products
+    constructor() {
+        this.inputs = config.inputs.map((item) => path.resolve(item))
+        this.exclude = config.exclude.map((item) => path.resolve(item))
+        this.outputs = new Outputs()
+        this.products = new Products()
     }
 
 }
 
-export = new IconConfig(config.inputs, new Outputs(), new Products())
+export = new IconConfig()

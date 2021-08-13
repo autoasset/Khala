@@ -2,6 +2,10 @@
     "inputs": [
         "./assets"
     ],
+
+    "exclude": [
+        "./assets/icons/dui_analysis_icon.svg"
+    ],
     "outputs": {
         "gif2x": "./coverter/gif2x",
         "gif3x": "./coverter/gif3x",

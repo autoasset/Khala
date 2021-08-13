@@ -1,3 +1,4 @@
+import path from "path";
 
 class FilePath {
 
@@ -45,7 +46,7 @@ class FilePath {
     static path(folder: string, filename: string): string {
         var paths = folder.split('/')
         paths.push(filename)
-        return paths.join('/')
+        return path.resolve(paths.join('/'))
     }
 
 }
