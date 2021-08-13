@@ -1,6 +1,7 @@
 import config from "./config";
 import * as fs from "fs/promises";
 import svg2vectordrawable from "svg2vectordrawable";
+import FilePath from "./FilePath"
 
 class Glyphs {
     name: string
@@ -39,8 +40,8 @@ class SVGCoverter {
         }
 
         const xml = await svg2vectordrawable(data.toString(), options)
-        const filename = coverter.filename(name, 'xml')
-        const path = coverter.filePath(config.outputs.svg2xml, filename)
+        const filename = FilePath.filename(name, 'xml')
+        const path = FilePath.path(config.outputs.svg2xml, filename)
         await fs.writeFile(path, xml)
     }
 
@@ -55,16 +56,16 @@ class SVGCoverter {
         const unicode = String.fromCharCode(0xe000 + coverter.glyphs.length)
         const unicodeHex = unicode.charCodeAt(0).toString(16)
         coverter.iconfont.setSvg(unicode, String(data))
-        coverter.glyphs.push(new Glyphs(coverter.filename(name, ""), "iconfont", unicode, unicodeHex))
+        coverter.glyphs.push(new Glyphs(FilePath.filename(name, ""), "iconfont", unicode, unicodeHex))
     }
 
     async iconfontTTF(coverter: SVGCoverter) {
-        const path = coverter.filePath(config.outputs.svg2iconfont, coverter.filename("iconfont", ""))
+        const path = FilePath.path(config.outputs.svg2iconfont, FilePath.filename("iconfont", ""))
         coverter.iconfont.output({ path: path, types: ['ttf'] })
     }
 
     async iconfontJSON(coverter: SVGCoverter) {
-        const path = coverter.filePath(config.outputs.svg2iconfont, coverter.filename("iconfont", "json"))
+        const path = FilePath.path(config.outputs.svg2iconfont, FilePath.filename("iconfont", "json"))
         await fs.writeFile(path, JSON.stringify({
             font_family: 'iconfont',
             glyphs: coverter.glyphs,
@@ -93,12 +94,12 @@ class SVGCoverter {
         for (const glyphs of coverter.glyphs) {
             html = html + '<span class="iconfont">' + glyphs.unicode_value + '</span>'
         }
-        const path = coverter.filePath(config.outputs.svg2iconfont, coverter.filename("iconfont", "html"))
+        const path = FilePath.path(config.outputs.svg2iconfont, FilePath.filename("iconfont", "html"))
         await fs.writeFile(path, html)
     }
 
     async pdf(coverter: SVGCoverter, file: string, name: string, data: Buffer) {
-        const path = coverter.filePath(config.outputs.svg2pdf, coverter.filename(name, "pdf"))
+        const path = FilePath.path(config.outputs.svg2pdf, FilePath.filename(name, "pdf"))
         require('shelljs').exec('inkscape ' + file + ' --export-type=pdf --export-filename=' + path)
     }
 
@@ -106,23 +107,6 @@ class SVGCoverter {
        await coverter.iconfontTTF(coverter)
        await coverter.iconfontHtml(coverter)
        await coverter.iconfontJSON(coverter)
-    }
-
-    filename(name: string, extension: string): string {
-        const index = name.indexOf('.')
-        var list: string[] = []
-        if (index == -1) {
-            list = [name, extension]
-        } else {
-            list = [name.substring(0, index), extension]
-        }
-        return list.filter(item => item).join(".")
-    }
-
-    filePath(folder: string, filename: string): string {
-        var paths = folder.split('/')
-        paths.push(filename)
-        return paths.join('/')
     }
 }
 
