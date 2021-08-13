@@ -1,6 +1,36 @@
 
 class FilePath {
 
+    static rename(name: string,
+        removePrefix: string,
+        removeSubffix: string,
+        addPrefix: string,
+        addSubffix: string,
+        extension?: string): string {
+
+        var ext = extension
+        var filename: string = name
+
+        if (!extension) {
+            const list = name.split(".")
+            ext = list[list.length - 1]
+            const paths = list[0].split('/')
+            filename = paths[paths.length - 1]
+        }
+
+        if (filename.startsWith(removePrefix)) {
+            filename = filename.slice(removePrefix.length);
+        }
+
+        if (filename.endsWith(removeSubffix)) {
+            filename = filename.slice(0, filename.length - removeSubffix.length - 1);
+        }
+
+        filename = addPrefix + filename + addSubffix
+
+        return [filename, ext].filter(item => item).join(".")
+    }
+
     static filename(name: string, extension: string): string {
         const index = name.indexOf('.')
         var list: string[] = []
@@ -11,7 +41,7 @@ class FilePath {
         }
         return list.filter(item => item).join(".")
     }
-    
+
     static path(folder: string, filename: string): string {
         var paths = folder.split('/')
         paths.push(filename)

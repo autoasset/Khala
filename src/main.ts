@@ -1,12 +1,14 @@
-import iconCoverter from './IconCoverter'
-import svgCoverter from "./SVGCoverter"
+import IconCoverter from './IconCoverter'
+import SVGCoverter from "./SVGCoverter"
+import ProductsCoverter from './ProductsCoverter';
 
 (async () => {
     try {
-        await iconCoverter.run(async (file, name) => {
-           await svgCoverter.run(svgCoverter, file, name)
+        await IconCoverter.run(async (file, name) => {
+           await SVGCoverter.run(SVGCoverter, file, name)
         });
-        await svgCoverter.finish(svgCoverter)
+        await SVGCoverter.finish(SVGCoverter)
+        await ProductsCoverter.run()
     } catch (error) {
        console.log(error)
     }

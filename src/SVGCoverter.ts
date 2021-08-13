@@ -29,8 +29,6 @@ class SVGCoverter {
 
     glyphs: Glyphs[] = []
 
-
-
     async vectordrawable(coverter: SVGCoverter, file: string, name: string, data: Buffer) {
 
         const options = {

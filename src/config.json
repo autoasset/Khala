@@ -1,6 +1,6 @@
 {
     "inputs": [
-        "./assets/icons"
+        "./assets"
     ],
     "outputs": {
         "gif2x": "./coverter/gif2x",
@@ -13,5 +13,22 @@
         "pdf": "./coverter/pdf",
         "svg": "./coverter/svg",
         "other": "./coverter/other"
+    },
+
+    "products": {
+        "ios": {
+            "vector_template": "./products/ios/vector_template",
+            "icon": "./products/ios/icon",
+            "gif":"./products/ios/gif"
+        },
+        "android": {
+            "vector_template": "./products/android/vector_template",
+            "x2": "./products/android/x2",
+            "x3": "./products/android/x3"
+        }, 
+        "flutter": {
+            "iconfont": "./products/flutter/iconfont"
+        }
     }
+
 }
