@@ -14,9 +14,11 @@ class FilePath {
 
         if (!extension) {
             const list = name.split(".")
-            ext = list[list.length - 1]
             const paths = list[0].split('/')
             filename = paths[paths.length - 1]
+
+            list.shift()
+            ext = list.join(".")
         }
 
         if (filename.startsWith(removePrefix)) {

@@ -1,11 +1,12 @@
 {
     "inputs": [
-        "./assets"
+        "./assets/icons"
     ],
 
     "exclude": [
         "./assets/icons/dui_analysis_icon.svg"
     ],
+    
     "outputs": {
         "gif2x": "./coverter/gif2x",
         "gif3x": "./coverter/gif3x",
@@ -26,6 +27,10 @@
             "gif":"./products/ios/gif"
         },
         "android": {
+            "build_settings": {
+                "copy_2x_inputs": ["./assets/patch9_2x"],
+                "copy_3x_inputs": ["./assets/patch9_3x"]
+            },
             "vector_template": "./products/android/vector_template",
             "x2": "./products/android/x2",
             "x3": "./products/android/x3"

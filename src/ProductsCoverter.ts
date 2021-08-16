@@ -1,6 +1,7 @@
 import config from "./config";
 import * as fs from "fs/promises";
 import FilePath from "./FilePath";
+import path from "path/posix";
 
 class ProductsCoverter {
 
@@ -29,12 +30,41 @@ class ProductsCoverter {
     async androidBuild() {
 
         const android = config.products.android
+
         for (const folder of [android.x2, android.x3, android.vector_template].filter(item => item)) {
             await fs.rmdir(folder, { recursive: true })
             await fs.mkdir(folder, { recursive: true })
         }
 
+        var copy_2x_Map = new Map<string, string>()
+        var copy_3x_Map = new Map<string, string>()
+
+        for (const folder of android.build_settings.copy_2x_inputs) {
+            for  (const filename of await fs.readdir(folder)) {
+                var key = FilePath.filename(filename, "")
+                const path = FilePath.path(folder,filename)
+                copy_2x_Map.set(key, path)
+                const targetName = FilePath.rename(filename, "", "", "", "", "")
+                const targetPath = FilePath.path(android.x2, targetName)
+                await fs.copyFile(path, targetPath)
+            }
+        }
+
+        for (const folder of android.build_settings.copy_3x_inputs) {
+            for  (const filename of await fs.readdir(folder)) {
+                var key = FilePath.filename(filename, "")
+                const path = FilePath.path(folder,filename)
+                copy_3x_Map.set(key, path)
+                const targetName = FilePath.rename(filename, "", "", "", "", "")
+                const targetPath = FilePath.path(android.x3, targetName)
+                await fs.copyFile(path, targetPath)
+            }
+        }
+
         for (const filename of await fs.readdir(config.outputs.gif2x)) {
+            if (copy_2x_Map.get(FilePath.filename(filename, ""))) {
+                continue
+            }
             const path = FilePath.path(config.outputs.gif2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.x2, targetName)
@@ -42,6 +72,9 @@ class ProductsCoverter {
         }
 
         for (const filename of await fs.readdir(config.outputs.gif3x)) {
+            if (copy_3x_Map.get(FilePath.filename(filename, ""))) {
+                continue
+            }
             const path = FilePath.path(config.outputs.gif3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.x3, targetName)
@@ -49,6 +82,9 @@ class ProductsCoverter {
         }
 
         for (const filename of await fs.readdir(config.outputs.icon2x)) {
+            if (copy_2x_Map.get(FilePath.filename(filename, ""))) {
+                continue
+            }
             const path = FilePath.path(config.outputs.icon2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.x2, targetName)
@@ -56,6 +92,9 @@ class ProductsCoverter {
         }
 
         for (const filename of await fs.readdir(config.outputs.icon3x)) {
+            if (copy_3x_Map.get(FilePath.filename(filename, ""))) {
+                continue
+            }
             const path = FilePath.path(config.outputs.icon3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.x3, targetName)
