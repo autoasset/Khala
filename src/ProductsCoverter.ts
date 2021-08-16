@@ -27,6 +27,24 @@ class ProductsCoverter {
         }
     }
 
+    // https://stackoverflow.com/questions/41011739/error-the-file-name-must-end-with-xml-or-png
+    androidFilenameCheck(filename: string): boolean {
+        if (filename.endsWith(".xml")) {
+            return true
+        }
+        if (filename.endsWith(".jpg")) {
+            return true
+        }
+        if (filename.endsWith(".gif")) {
+            return true
+        }
+        if (filename.endsWith(".png")) {
+            return true
+        }
+        console.log("安卓资源文件名后缀只能为xml/png, file: " + filename)
+        return false
+    }
+
     async androidBuild() {
 
         const android = config.products.android
@@ -40,9 +58,12 @@ class ProductsCoverter {
         var copy_3x_Map = new Map<string, string>()
 
         for (const folder of android.build_settings.copy_2x_inputs) {
-            for  (const filename of await fs.readdir(folder)) {
+            for (const filename of await fs.readdir(folder)) {
+                if (!this.androidFilenameCheck(filename)) {
+                    continue
+                }
                 var key = FilePath.filename(filename, "")
-                const path = FilePath.path(folder,filename)
+                const path = FilePath.path(folder, filename)
                 copy_2x_Map.set(key, path)
                 const targetName = FilePath.rename(filename, "", "", "", "", "")
                 const targetPath = FilePath.path(android.x2, targetName)
@@ -51,9 +72,12 @@ class ProductsCoverter {
         }
 
         for (const folder of android.build_settings.copy_3x_inputs) {
-            for  (const filename of await fs.readdir(folder)) {
+            for (const filename of await fs.readdir(folder)) {
+                if (!this.androidFilenameCheck(filename)) {
+                    continue
+                }
                 var key = FilePath.filename(filename, "")
-                const path = FilePath.path(folder,filename)
+                const path = FilePath.path(folder, filename)
                 copy_3x_Map.set(key, path)
                 const targetName = FilePath.rename(filename, "", "", "", "", "")
                 const targetPath = FilePath.path(android.x3, targetName)
@@ -63,6 +87,9 @@ class ProductsCoverter {
 
         for (const filename of await fs.readdir(config.outputs.gif2x)) {
             if (copy_2x_Map.get(FilePath.filename(filename, ""))) {
+                continue
+            }
+            if (!this.androidFilenameCheck(filename)) {
                 continue
             }
             const path = FilePath.path(config.outputs.gif2x, filename);
@@ -75,6 +102,9 @@ class ProductsCoverter {
             if (copy_3x_Map.get(FilePath.filename(filename, ""))) {
                 continue
             }
+            if (!this.androidFilenameCheck(filename)) {
+                continue
+            }
             const path = FilePath.path(config.outputs.gif3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.x3, targetName)
@@ -83,6 +113,9 @@ class ProductsCoverter {
 
         for (const filename of await fs.readdir(config.outputs.icon2x)) {
             if (copy_2x_Map.get(FilePath.filename(filename, ""))) {
+                continue
+            }
+            if (!this.androidFilenameCheck(filename)) {
                 continue
             }
             const path = FilePath.path(config.outputs.icon2x, filename);
@@ -95,6 +128,9 @@ class ProductsCoverter {
             if (copy_3x_Map.get(FilePath.filename(filename, ""))) {
                 continue
             }
+            if (!this.androidFilenameCheck(filename)) {
+                continue
+            }
             const path = FilePath.path(config.outputs.icon3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.x3, targetName)
@@ -102,6 +138,9 @@ class ProductsCoverter {
         }
 
         for (const filename of await fs.readdir(config.outputs.svg2xml)) {
+            if (!this.androidFilenameCheck(filename)) {
+                continue
+            }
             const path = FilePath.path(config.outputs.svg2xml, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.path(android.vector_template, targetName)
