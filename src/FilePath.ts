@@ -21,11 +21,11 @@ class FilePath {
             ext = list.join(".")
         }
 
-        if (filename.startsWith(removePrefix)) {
+        if (removePrefix && filename.startsWith(removePrefix)) {
             filename = filename.slice(removePrefix.length);
         }
 
-        if (filename.endsWith(removeSubffix)) {
+        if (removeSubffix && filename.endsWith(removeSubffix)) {
             filename = filename.slice(0, filename.length - removeSubffix.length - 1);
         }
 
