@@ -40,7 +40,7 @@ class AndroidProducts {
 
 class Products {
 
-    ios: { vector_template: string, icon: string, gif: string }
+    ios: { vector_template: string, icon: string, gif: string, iconfont: string }
     android: AndroidProducts
     flutter: { iconfont: string }
 
@@ -50,6 +50,7 @@ class Products {
             vector_template: filePath(config.products.ios.vector_template),
             icon: filePath(config.products.ios.icon),
             gif: filePath(config.products.ios.gif),
+            iconfont: filePath(config.products.ios.iconfont),
         }
 
         this.android = new AndroidProducts()
@@ -73,6 +74,8 @@ class Outputs {
     svg2pdf: string
     svg2xml: string
     svg2iconfont: string
+    custom_iconfont_family: string
+    svg2custom_iconfont: string
     allPaths: string[]
 
     constructor() {
@@ -87,6 +90,9 @@ class Outputs {
         this.svg2xml = filePath(config.outputs.svg2xml)
         this.svg2iconfont = filePath(config.outputs.svg2iconfont)
 
+        this.svg2custom_iconfont = filePath(config.outputs.svg2custom_iconfont)
+        this.custom_iconfont_family = config.outputs.custom_iconfont_family
+
         this.allPaths = [this.gif2x,
         this.gif3x,
         this.icon2x,
@@ -97,7 +103,7 @@ class Outputs {
         this.svg2pdf,
         this.svg2xml,
         this.svg2iconfont,
-        ]
+        this.svg2custom_iconfont]
     }
 
 }
