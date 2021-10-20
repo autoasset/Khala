@@ -8,17 +8,17 @@ stages:
 
 build-job:
   stage: build
-  only: master
+  only: 
+    - master
   script:
     - git clone --single-branch --depth 1 $CI_REPOSITORY_SSH_URL gitlab
     - git clone --single-branch --depth 1 https://github.com/autoasset/publish-template-khala.git github
 
     - rm -rf github/.github
     - rm -rf github/.git
-
     - cp -r  github/. gitlab/
     - rm -rf github
-    - cd gitlab
     
+    - cd gitlab
     - git commit -am "sync"
     - git push 
