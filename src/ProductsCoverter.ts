@@ -151,9 +151,16 @@ class ProductsCoverter {
     async iosBuild() {
         const ios = config.products.ios
 
-        for (const folder of [ios.gif, ios.icon, ios.vector_template].filter(item => item)) {
+        for (const folder of [ios.gif, ios.icon, ios.vector_template, ios.iconfont].filter(item => item)) {
             await fs.rmdir(folder, { recursive: true })
             await fs.mkdir(folder, { recursive: true })
+        }
+
+        for (const filename of await fs.readdir(config.outputs.svg2custom_iconfont)) {
+            const path = FilePath.path(config.outputs.svg2custom_iconfont, filename);
+            const targetName = FilePath.rename(filename, "", "", "", "", "")
+            const targetPath = FilePath.path(ios.iconfont, targetName)
+            await fs.copyFile(path, targetPath)
         }
 
         for (const filename of await fs.readdir(config.outputs.gif3x)) {
