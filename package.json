@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "node lib/main.js",
-    "dev": "tsc -p . && node lib/main.js"
+    "build": "tsc -p . && node lib/main.js"
   },
   "author": "",
   "license": "ISC",
