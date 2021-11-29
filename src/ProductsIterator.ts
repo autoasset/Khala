@@ -1,10 +1,23 @@
-import config from "./config";
-import * as fs from "fs/promises";
+import IconConfig from "./config";
+import fs from "fs/promises";
 import FilePath from "./FilePath";
-import path from "path/posix";
 
-class ProductsCoverter {
+class ProductsIterator {
 
+    config: IconConfig
+
+    constructor(config: IconConfig) {
+        this.config = config
+    }
+
+    public async prepare() {
+
+    }
+
+    async finish() {
+
+    }
+    
     async run() {
         await this.iosBuild()
         await this.androidBuild()
@@ -12,17 +25,17 @@ class ProductsCoverter {
     }
 
     async flutterBuild() {
-        const flutter = config.products.flutter
+        const flutter = this.config.products.flutter
 
         for (const folder of [flutter.iconfont].filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+            await FilePath.delete(folder)
             await fs.mkdir(folder, { recursive: true })
         }
 
-        for (const filename of await fs.readdir(config.outputs.svg2iconfont)) {
-            const path = FilePath.path(config.outputs.svg2iconfont, filename);
+        for (const filename of await fs.readdir(this.config.outputs.svg2iconfont)) {
+            const path = FilePath.filePath(this.config.outputs.svg2iconfont, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(flutter.iconfont, targetName)
+            const targetPath = FilePath.filePath(flutter.iconfont, targetName)
             await fs.copyFile(path, targetPath)
         }
     }
@@ -47,10 +60,10 @@ class ProductsCoverter {
 
     async androidBuild() {
 
-        const android = config.products.android
+        const android = this.config.products.android
 
         for (const folder of [android.x2, android.x3, android.vector_template].filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+            await FilePath.delete(folder)
             await fs.mkdir(folder, { recursive: true })
         }
 
@@ -63,10 +76,10 @@ class ProductsCoverter {
                     continue
                 }
                 var key = FilePath.filename(filename, "")
-                const path = FilePath.path(folder, filename)
+                const path = FilePath.filePath(folder, filename)
                 copy_2x_Map.set(key, path)
                 const targetName = FilePath.rename(filename, "", "", "", "", "")
-                const targetPath = FilePath.path(android.x2, targetName)
+                const targetPath = FilePath.filePath(android.x2, targetName)
                 await fs.copyFile(path, targetPath)
             }
         }
@@ -77,121 +90,121 @@ class ProductsCoverter {
                     continue
                 }
                 var key = FilePath.filename(filename, "")
-                const path = FilePath.path(folder, filename)
+                const path = FilePath.filePath(folder, filename)
                 copy_3x_Map.set(key, path)
                 const targetName = FilePath.rename(filename, "", "", "", "", "")
-                const targetPath = FilePath.path(android.x3, targetName)
+                const targetPath = FilePath.filePath(android.x3, targetName)
                 await fs.copyFile(path, targetPath)
             }
         }
 
-        for (const filename of await fs.readdir(config.outputs.gif2x)) {
+        for (const filename of await fs.readdir(this.config.outputs.gif2x)) {
             if (copy_2x_Map.get(FilePath.filename(filename, ""))) {
                 continue
             }
             if (!this.androidFilenameCheck(filename)) {
                 continue
             }
-            const path = FilePath.path(config.outputs.gif2x, filename);
+            const path = FilePath.filePath(this.config.outputs.gif2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(android.x2, targetName)
+            const targetPath = FilePath.filePath(android.x2, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.gif3x)) {
+        for (const filename of await fs.readdir(this.config.outputs.gif3x)) {
             if (copy_3x_Map.get(FilePath.filename(filename, ""))) {
                 continue
             }
             if (!this.androidFilenameCheck(filename)) {
                 continue
             }
-            const path = FilePath.path(config.outputs.gif3x, filename);
+            const path = FilePath.filePath(this.config.outputs.gif3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(android.x3, targetName)
+            const targetPath = FilePath.filePath(android.x3, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.icon2x)) {
+        for (const filename of await fs.readdir(this.config.outputs.icon2x)) {
             if (copy_2x_Map.get(FilePath.filename(filename, ""))) {
                 continue
             }
             if (!this.androidFilenameCheck(filename)) {
                 continue
             }
-            const path = FilePath.path(config.outputs.icon2x, filename);
+            const path = FilePath.filePath(this.config.outputs.icon2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(android.x2, targetName)
+            const targetPath = FilePath.filePath(android.x2, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.icon3x)) {
+        for (const filename of await fs.readdir(this.config.outputs.icon3x)) {
             if (copy_3x_Map.get(FilePath.filename(filename, ""))) {
                 continue
             }
             if (!this.androidFilenameCheck(filename)) {
                 continue
             }
-            const path = FilePath.path(config.outputs.icon3x, filename);
+            const path = FilePath.filePath(this.config.outputs.icon3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(android.x3, targetName)
+            const targetPath = FilePath.filePath(android.x3, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.svg2xml)) {
+        for (const filename of await fs.readdir(this.config.outputs.svg2xml)) {
             if (!this.androidFilenameCheck(filename)) {
                 continue
             }
-            const path = FilePath.path(config.outputs.svg2xml, filename);
+            const path = FilePath.filePath(this.config.outputs.svg2xml, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(android.vector_template, targetName)
+            const targetPath = FilePath.filePath(android.vector_template, targetName)
             await fs.copyFile(path, targetPath)
         }
     }
 
     async iosBuild() {
-        const ios = config.products.ios
+        const ios = this.config.products.ios
 
         for (const folder of [ios.gif, ios.icon, ios.vector_template, ios.iconfont].filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+            await FilePath.delete(folder)
             await fs.mkdir(folder, { recursive: true })
         }
 
-        for (const filename of await fs.readdir(config.outputs.svg2custom_iconfont)) {
-            const path = FilePath.path(config.outputs.svg2custom_iconfont, filename);
+        for (const filename of await fs.readdir(this.config.outputs.svg2custom_iconfont)) {
+            const path = FilePath.filePath(this.config.outputs.svg2custom_iconfont, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(ios.iconfont, targetName)
+            const targetPath = FilePath.filePath(ios.iconfont, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.gif3x)) {
-            const path = FilePath.path(config.outputs.gif3x, filename);
+        for (const filename of await fs.readdir(this.config.outputs.gif3x)) {
+            const path = FilePath.filePath(this.config.outputs.gif3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(ios.gif, targetName)
+            const targetPath = FilePath.filePath(ios.gif, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.icon2x)) {
-            const path = FilePath.path(config.outputs.icon2x, filename);
+        for (const filename of await fs.readdir(this.config.outputs.icon2x)) {
+            const path = FilePath.filePath(this.config.outputs.icon2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "@2x", "")
-            const targetPath = FilePath.path(ios.icon, targetName)
+            const targetPath = FilePath.filePath(ios.icon, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.icon3x)) {
-            const path = FilePath.path(config.outputs.icon3x, filename);
+        for (const filename of await fs.readdir(this.config.outputs.icon3x)) {
+            const path = FilePath.filePath(this.config.outputs.icon3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "@3x", "")
-            const targetPath = FilePath.path(ios.icon, targetName)
+            const targetPath = FilePath.filePath(ios.icon, targetName)
             await fs.copyFile(path, targetPath)
         }
 
-        for (const filename of await fs.readdir(config.outputs.svg2pdf)) {
-            const path = FilePath.path(config.outputs.svg2pdf, filename);
+        for (const filename of await fs.readdir(this.config.outputs.svg2pdf)) {
+            const path = FilePath.filePath(this.config.outputs.svg2pdf, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(ios.vector_template, targetName)
+            const targetPath = FilePath.filePath(ios.vector_template, targetName)
             await fs.copyFile(path, targetPath)
         }
     }
 
 }
 
-export = new ProductsCoverter()
+export = ProductsIterator
