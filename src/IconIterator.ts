@@ -30,7 +30,7 @@ class IconIterator implements FileIteratorNext {
 
         if (metadata.format == 'gif') {
             this.dealImage3x(file, path, metadata, this.config.outputs.gif3x)
-            this.dealImage2x(file, path, metadata, this.config.outputs.gif2x)
+            this.dealGIF2x(file, path, metadata, this.config.outputs.gif2x)
             return
         }
 
@@ -58,9 +58,26 @@ class IconIterator implements FileIteratorNext {
         if (metadata.width == undefined) {
             return
         }
-        await sharp(path)
+
+        const output = FilePath.filePath(folder, FilePath.basename(path))
+
+        await file
             .resize(Math.round(metadata.width / 3 * 2))
-            .toFile(FilePath.filePath(folder, FilePath.basename(path)))
+            .toFile(output)
+    }
+
+    async dealGIF2x(file: sharp.Sharp, path: string, metadata: sharp.Metadata, folder: string) {
+        if (metadata.height == undefined) {
+            return
+        }
+
+        const output = FilePath.filePath(folder, FilePath.basename(path))
+
+        await file
+            .gif({ 
+                pageHeight: Math.round(metadata.height / 3 * 2),
+            })
+            .toFile(output)
     }
 
     async finish() {
