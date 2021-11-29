@@ -2,6 +2,7 @@ import config from "./config";
 import * as fs from "fs/promises";
 import FilePath from "./FilePath";
 import path from "path/posix";
+import { Map } from "typescript";
 
 class ProductsCoverter {
 
@@ -14,16 +15,21 @@ class ProductsCoverter {
     async flutterBuild() {
         const flutter = config.products.flutter
 
-        for (const folder of [flutter.iconfont].filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+        var flutterPaths = flutter.fonts.map((item) => item.path)
+
+        for (const folder of flutterPaths.filter(item => item)) {
+            try {
+                await fs.rm(folder)
+            } catch (error) { }
             await fs.mkdir(folder, { recursive: true })
         }
 
-        for (const filename of await fs.readdir(config.outputs.svg2iconfont)) {
-            const path = FilePath.path(config.outputs.svg2iconfont, filename);
-            const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(flutter.iconfont, targetName)
-            await fs.copyFile(path, targetPath)
+        for (const item of flutter.fonts) {
+            var path = this.ttfPath(item.fontname)
+            if (path === undefined) {
+                continue
+            }
+            await fs.copyFile(path, item.path)
         }
     }
 
@@ -50,7 +56,9 @@ class ProductsCoverter {
         const android = config.products.android
 
         for (const folder of [android.x2, android.x3, android.vector_template].filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+            try {
+                await fs.rm(folder)
+            } catch (error) { }
             await fs.mkdir(folder, { recursive: true })
         }
 
@@ -148,19 +156,33 @@ class ProductsCoverter {
         }
     }
 
+    ttfPath(fontname: string): string | undefined {
+        var fonts: { [id: string]: { fontname: string, ttf: string } } = {};
+        for (const item of config.outputs.svg2fonts) {
+            fonts[item.fontname] = item
+        }
+        return fonts[fontname]?.ttf
+    }
+
     async iosBuild() {
         const ios = config.products.ios
+        
+        var iOSPaths = [ios.gif, ios.icon, ios.vector_template].filter(item => item)
+        iOSPaths.concat(ios.fonts.map((item) => item.path))
 
-        for (const folder of [ios.gif, ios.icon, ios.vector_template, ios.iconfont].filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+        for (const folder of iOSPaths) {
+            try {
+                await fs.rm(folder)
+            } catch (error) { }
             await fs.mkdir(folder, { recursive: true })
         }
 
-        for (const filename of await fs.readdir(config.outputs.svg2custom_iconfont)) {
-            const path = FilePath.path(config.outputs.svg2custom_iconfont, filename);
-            const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.path(ios.iconfont, targetName)
-            await fs.copyFile(path, targetPath)
+        for (const item of ios.fonts) {
+            var path = this.ttfPath(item.fontname)
+            if (path === undefined) {
+                continue
+            }
+            await fs.copyFile(path, item.path)
         }
 
         for (const filename of await fs.readdir(config.outputs.gif3x)) {

@@ -55,11 +55,13 @@ class IconCoverter {
         }
         const outputs = config.outputs
         if (metadata.format == 'gif') {
+            FilePath.mkParentDir(outputs.gif2x)
             await sharp(path)
                 .resize(Math.round(metadata.width / 3 * 2))
                 .toFile(FilePath.path(outputs.gif2x, filename))
             fs.copyFile(path, FilePath.path(outputs.gif3x, filename))
         } else if (metadata.format == 'png' || metadata.format == 'jpg' || metadata.format == 'jpeg') {
+            FilePath.mkParentDir(outputs.icon2x)
             await sharp(path)
                 .resize(Math.round(metadata.width / 3 * 2))
                 .toFile(FilePath.path(outputs.icon2x, filename))
@@ -67,6 +69,7 @@ class IconCoverter {
         } else if (metadata.format == 'svg') {
             await svgCoverter(path, filename)
         } else {
+            FilePath.mkParentDir(outputs.other)
             fs.copyFile(path, FilePath.path(outputs.other, filename))
         }
     }
@@ -76,7 +79,9 @@ class IconCoverter {
         const inputs = config.inputs
 
         for (const folder of outputs.allPaths.filter(item => item)) {
-            await fs.rmdir(folder, { recursive: true })
+            try {
+                await fs.rm(folder)  
+            } catch (error) {}
             await fs.mkdir(folder, { recursive: true })
         }
 

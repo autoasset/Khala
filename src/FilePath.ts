@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 
 class FilePath {
@@ -43,6 +44,24 @@ class FilePath {
             list = [name.substring(0, index), extension]
         }
         return list.filter(item => item).join(".")
+    }
+
+    static folder(filePath: string): string {
+        var paths = filePath.split('/')
+        paths.pop()
+        return path.resolve(paths.join('/'))
+    }
+
+    static write(path: string, data: string | NodeJS.ArrayBufferView) {
+        this.mkParentDir(path)
+        fs.writeFileSync(path, data)
+    }
+
+    static mkParentDir(path: string) {
+        const folder = FilePath.folder(path);
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder, { recursive: true })
+        }
     }
 
     static path(folder: string, filename: string): string {
