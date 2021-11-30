@@ -11,7 +11,15 @@ class ProductsIterator {
     }
 
     public async prepare() {
+        await FilePath.createFolder(this.config.products.ios.icon)
+        await FilePath.createFolder(this.config.products.ios.gif)
+        await FilePath.createFolder(this.config.products.ios.iconfont)
 
+        await FilePath.createFolder(this.config.products.android.vector_template)
+        await FilePath.createFolder(this.config.products.android.x2)
+        await FilePath.createFolder(this.config.products.android.x3)
+
+        await FilePath.createFolder(this.config.products.flutter.iconfont)
     }
 
     async finish() {
@@ -29,14 +37,13 @@ class ProductsIterator {
 
         for (const folder of [flutter.iconfont].filter(item => item)) {
             await FilePath.delete(folder)
-            await fs.mkdir(folder, { recursive: true })
+            await FilePath.createFolder(folder)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.svg2iconfont)) {
             const path = FilePath.filePath(this.config.outputs.svg2iconfont, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(flutter.iconfont, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(flutter.iconfont, path, targetName)
         }
     }
 
@@ -64,7 +71,7 @@ class ProductsIterator {
 
         for (const folder of [android.x2, android.x3, android.vector_template].filter(item => item)) {
             await FilePath.delete(folder)
-            await fs.mkdir(folder, { recursive: true })
+            await FilePath.createFolder(folder)
         }
 
         var copy_2x_Map = new Map<string, string>()
@@ -79,8 +86,7 @@ class ProductsIterator {
                 const path = FilePath.filePath(folder, filename)
                 copy_2x_Map.set(key, path)
                 const targetName = FilePath.rename(filename, "", "", "", "", "")
-                const targetPath = FilePath.filePath(android.x2, targetName)
-                await fs.copyFile(path, targetPath)
+                await FilePath.copyToFolder(android.x2, path, targetName)
             }
         }
 
@@ -93,8 +99,7 @@ class ProductsIterator {
                 const path = FilePath.filePath(folder, filename)
                 copy_3x_Map.set(key, path)
                 const targetName = FilePath.rename(filename, "", "", "", "", "")
-                const targetPath = FilePath.filePath(android.x3, targetName)
-                await fs.copyFile(path, targetPath)
+                await FilePath.copyToFolder(android.x3, path, targetName)
             }
         }
 
@@ -107,8 +112,7 @@ class ProductsIterator {
             }
             const path = FilePath.filePath(this.config.outputs.gif2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(android.x2, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(android.x2, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.gif3x)) {
@@ -120,8 +124,7 @@ class ProductsIterator {
             }
             const path = FilePath.filePath(this.config.outputs.gif3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(android.x3, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(android.x3, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.icon2x)) {
@@ -134,7 +137,7 @@ class ProductsIterator {
             const path = FilePath.filePath(this.config.outputs.icon2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
             const targetPath = FilePath.filePath(android.x2, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(android.x2, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.icon3x)) {
@@ -146,8 +149,7 @@ class ProductsIterator {
             }
             const path = FilePath.filePath(this.config.outputs.icon3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(android.x3, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(android.x3, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.svg2xml)) {
@@ -156,8 +158,7 @@ class ProductsIterator {
             }
             const path = FilePath.filePath(this.config.outputs.svg2xml, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(android.vector_template, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(android.vector_template, path, targetName)
         }
     }
 
@@ -166,42 +167,37 @@ class ProductsIterator {
 
         for (const folder of [ios.gif, ios.icon, ios.vector_template, ios.iconfont].filter(item => item)) {
             await FilePath.delete(folder)
-            await fs.mkdir(folder, { recursive: true })
+            await FilePath.createFolder(folder)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.svg2custom_iconfont)) {
             const path = FilePath.filePath(this.config.outputs.svg2custom_iconfont, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(ios.iconfont, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(ios.iconfont, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.gif3x)) {
             const path = FilePath.filePath(this.config.outputs.gif3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(ios.gif, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(ios.gif, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.icon2x)) {
             const path = FilePath.filePath(this.config.outputs.icon2x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "@2x", "")
-            const targetPath = FilePath.filePath(ios.icon, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(ios.icon, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.icon3x)) {
             const path = FilePath.filePath(this.config.outputs.icon3x, filename);
             const targetName = FilePath.rename(filename, "", "", "", "@3x", "")
-            const targetPath = FilePath.filePath(ios.icon, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(ios.icon, path, targetName)
         }
 
         for (const filename of await fs.readdir(this.config.outputs.svg2pdf)) {
             const path = FilePath.filePath(this.config.outputs.svg2pdf, filename);
             const targetName = FilePath.rename(filename, "", "", "", "", "")
-            const targetPath = FilePath.filePath(ios.vector_template, targetName)
-            await fs.copyFile(path, targetPath)
+            await FilePath.copyToFolder(ios.vector_template, path, targetName)
         }
     }
 

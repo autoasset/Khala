@@ -66,7 +66,7 @@ class FilePath {
 
     static async delete(path: string) {
         try {
-            await fs.rm(path)
+            await fs.rm(path, { recursive: true })
         } catch (error) {
         
         }
@@ -84,8 +84,12 @@ class FilePath {
     static async createFolder(path: string) {
         try {
             await fs.access(path)
-        } catch (error) {       
-            fs.mkdir(path)
+        } catch (error) {    
+            try {
+               await fs.mkdir(path, { recursive: true })
+            } catch (error) {
+                
+            }   
         }
     }
 
