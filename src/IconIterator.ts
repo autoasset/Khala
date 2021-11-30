@@ -25,7 +25,7 @@ class IconIterator implements FileIteratorNext {
     }
 
     async add(path: string) {
-        const file = sharp(path)
+        const file = sharp(path, { animated: true })
         const metadata = await file.metadata()
 
         if (metadata.format == 'gif') {
@@ -59,14 +59,6 @@ class IconIterator implements FileIteratorNext {
             return
         }
 
-        const output = FilePath.filePath(folder, FilePath.basename(path))
-
-        await file
-            .resize(Math.round(metadata.width / 3 * 2))
-            .toFile(output)
-    }
-
-    async dealGIF2x(file: sharp.Sharp, path: string, metadata: sharp.Metadata, folder: string) {
         if (metadata.height == undefined) {
             return
         }
@@ -74,15 +66,39 @@ class IconIterator implements FileIteratorNext {
         const output = FilePath.filePath(folder, FilePath.basename(path))
 
         await file
-            .gif({ 
-                pageHeight: Math.round(metadata.height / 3 * 2),
+            .resize({
+                width: Math.round(metadata.width / 3 * 2),
+                height: Math.round(metadata.height / 3 * 2)
             })
             .toFile(output)
     }
 
+    async dealGIF2x(file: sharp.Sharp, path: string, metadata: sharp.Metadata, folder: string) {
+        if (metadata.width == undefined) {
+            return
+        }
+
+        if (metadata.height == undefined) {
+            return
+        }
+
+        const output = FilePath.filePath(folder, FilePath.basename(path))
+
+        await file
+            .gif()
+            .resize({
+                width: Math.round(metadata.width / 3 * 2),
+                height: Math.round(metadata.height / 3 * 2)
+            })
+            .toFile(output)
+
+            sharp(output, { animated})
+
+    }
+
     async finish() {
         for (const next of this.nexts) {
-           await next.finish()
+            await next.finish()
         }
     }
 
