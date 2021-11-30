@@ -8,18 +8,18 @@ class Glyphs {
     font_class: string
     unicode_value: string
     unicode: string
-    data: string
+    file: string
 
     constructor(name: string,
         font_class: string,
         unicode_value: string,
         unicode: string,
-        data: string) {
+        file: string) {
         this.name = name
         this.font_class = font_class
         this.unicode = unicode
         this.unicode_value = unicode_value
-        this.data = data
+        this.file = file
     }
 }
 
@@ -38,7 +38,7 @@ class SVGFontIterator implements SVGFileIteratorNext {
     }
 
     public async add(file: string) {
-        await this.addGlyph(FilePath.filename(FilePath.basename(file), ""), await fs.readFile(file))
+        await this.addGlyph(FilePath.filename(FilePath.basename(file), ""), file)
     }
 
     public async finish() {
@@ -46,11 +46,10 @@ class SVGFontIterator implements SVGFileIteratorNext {
         await this.output(this.config.outputs.svg2custom_iconfont, this.config.outputs.custom_iconfont_family)
     }
 
-    private async addGlyph(basename: string, data: Buffer) {
+    private async addGlyph(basename: string, file: string) {
         const unicode = String.fromCharCode(0xe000 + this.glyphs.length)
         const unicodeHex = unicode.charCodeAt(0).toString(16)
-        const dataRawValue = String(data)
-        this.glyphs.push(new Glyphs(basename, "iconfont", unicode, unicodeHex, dataRawValue))
+        this.glyphs.push(new Glyphs(basename, "iconfont", unicode, unicodeHex, file))
     }
 
     private async output(folder: string, fontFamily: string) {
@@ -63,7 +62,13 @@ class SVGFontIterator implements SVGFileIteratorNext {
         var font = require('font-carrier').create();
         const ttfOptions = font.getFontface().options;
         ttfOptions.fontFamily = fontFamily;
-        font.setFontface(ttfOptions);
+        font.options.id = fontFamily;
+        font.setFontface(ttfOptions);      
+          
+        for (const glyph of this.glyphs) {
+            const data = await fs.readFile(glyph.file)
+            font.setSvg(glyph.unicode, data.toString())
+        }
 
         const path = FilePath.filePath(folder, FilePath.filename("iconfont", ""))
         font.output({ path: path, types: ['ttf'] })

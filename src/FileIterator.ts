@@ -26,7 +26,7 @@ class FileIterator {
 
     async finish() {
         for (const next of this.nexts) {
-           await next.finish()
+            await next.finish()
         }
     }
 
@@ -50,7 +50,7 @@ class FileIterator {
         const stat = await fs.stat(path)
 
         if (stat.isDirectory()) {
-            this.scan(path)
+            await this.scan(path)
         } else if (stat.isFile()) {
             for (const next of this.nexts) {
                 await next.add(path)
