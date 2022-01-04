@@ -16,8 +16,8 @@ export = class CoverterOutput {
     /// [icon] 文件后缀
     icon_suffix: string
 
-    constructor(json: KLJSON) {
-        this.type = CoverterOutputType.init(json.stringValue("type"))
+    constructor(json: KLJSON, type: string) {
+        this.type = CoverterOutputType.init(json.stringValue("type", type))
         this.path = json.stringValue("path")
 
         this.icon_scale = json.numberValue("icon_scale", 3)
