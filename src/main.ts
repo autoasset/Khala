@@ -6,13 +6,21 @@ import FilePath from './FilePath';
 import fs from 'fs';
 import IconTask from './Config/IconTask';
 import Config from './Config/Config';
+import YAML from 'js-yaml'
 
 class Main {
 
     config: Config
 
-    constructor(path: string) {
-        const json = JSON.parse(fs.readFileSync(path).toString())
+    constructor(yaml: string, json_path: string) {
+        var json: any
+        try {
+            const file = fs.readFileSync(yaml).toString()
+            json = YAML.load(file)
+        } catch (error) {
+            const file = fs.readFileSync(json_path).toString()
+            json = JSON.parse(file)
+        }
         this.config = new Config(json)
     }
 
@@ -49,7 +57,7 @@ class Main {
 }
 
 (async () => {
-    const main = new Main('./config.json')
+    const main = new Main('./config.yaml', './config.json')
     await main.prepare()
     await main.run()
 })();
