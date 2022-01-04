@@ -20,7 +20,6 @@ tasks:
     icon_scale: 3
     output:
       path: "./products/android/x3"
-      icon_scale: 3
   - type: icon
     icon_scale: 3
     output:
@@ -31,7 +30,6 @@ tasks:
     icon_scale: 3
     output:
       path: "./products/ios/icon"
-      icon_scale: 3
       icon_suffix: "@3x"
   - type: svg
     output:

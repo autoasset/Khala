@@ -12,7 +12,7 @@ export = class Coverter {
 
     constructor(json: KLJSON) {
         this.type = CoverterType.init(json.stringValue("type")) 
-        this.icon_scale = json.numberValue("icon_scale")
-        this.output = new CoverterOutput(json.node("output"), this.type.rawValue)
+        this.icon_scale = json.numberValue("icon_scale", 3)
+        this.output = new CoverterOutput(json.node("output"), this.type.rawValue, this.icon_scale)
     }
 }

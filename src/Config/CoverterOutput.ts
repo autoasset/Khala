@@ -16,11 +16,11 @@ export = class CoverterOutput {
     /// [icon] 文件后缀
     icon_suffix: string
 
-    constructor(json: KLJSON, type: string) {
+    constructor(json: KLJSON, type: string, icon_scale: number) {
         this.type = CoverterOutputType.init(json.stringValue("type", type))
         this.path = json.stringValue("path")
 
-        this.icon_scale = json.numberValue("icon_scale", 3)
+        this.icon_scale = json.numberValue("icon_scale", icon_scale)
         this.icon_suffix = json.stringValue("icon_suffix")
 
         this.iconfont_family_name = json.stringValue("iconfont_family_name", "iconfont")
