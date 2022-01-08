@@ -5,4 +5,5 @@ import Main from './main'
     await main.prepare()
     await main.run()
     await main.finish()
+    console.log(main.report.human().join('\n'))
 })();

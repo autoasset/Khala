@@ -16,7 +16,7 @@ if (options.config) {
             await main.prepare()
             await main.run()
             await main.finish()
-            console.log(main.report.json())
+            console.log(main.report.human().join('\n'))
         } catch (error) {
             console.log(error)
         }

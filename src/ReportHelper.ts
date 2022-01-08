@@ -26,9 +26,8 @@ class FileLintMessage implements HumanMessage {
 
     human(): string[] {
         return [
-            `name: ${this.lint.name}`,
-            `pattern: ${this.lint.pattern}`,
-            this.paths.join('\n')
+            `lint: ${this.lint.name} | pattern: ${this.lint.pattern}`,
+            this.paths.map(item => `==> ${item}`).join('\n')
         ]
     }
 }
@@ -80,9 +79,8 @@ export class ReportHelper implements HumanMessage {
     }
 
     human(): string[] {
-        var list: string[] = [`duration: ${this.duration()}s`]
-        list.concat(this.itemHuman('FileLints', this.fileLints))
-        return list
+        return [`duration: ${this.duration()}s`]
+            .concat(this.itemHuman('FileLints', this.fileLints))
     }
 
     duration(): number {
