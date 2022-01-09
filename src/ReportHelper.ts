@@ -1,6 +1,7 @@
 import FileLint from "./Config/FileLints";
 import Report from "./Config/Report";
 import FilePath from "./FilePath";
+import path from 'path'
 
 interface HumanMessage {
     human(): string[]
@@ -43,7 +44,7 @@ export class ReportHelper implements HumanMessage {
         this.report = report
     }
 
-    fileLintFail(path: string, lint: FileLint) {
+    fileLintFail(file: string, lint: FileLint) {
         if (this.report == undefined) {
             return
         }
@@ -52,7 +53,8 @@ export class ReportHelper implements HumanMessage {
         if (!this.fileLints[key]) {
             this.fileLints[key] = new FileLintMessage(lint)
         }
-        this.fileLints[key].paths.push(path)
+        const filePath = path.relative(process.cwd(), file)
+        this.fileLints[key].paths.push(filePath)
     }
 
     output() {

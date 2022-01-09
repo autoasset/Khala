@@ -1,3 +1,4 @@
+import path from "path"
 import { KLJSON } from "./KLJSON"
 
 export = class Report {
@@ -6,12 +7,12 @@ export = class Report {
     path: string = ""
 
     static init(json: KLJSON): Report | undefined {
-        const path = json.stringValue("path")
-        if (path === "") {
+        const pathValue = path.resolve(json.stringValue("path"))
+        if (pathValue.length <= 0) {
             return undefined
         }
 
-        const model = new Report(path)
+        const model = new Report(pathValue)
 
         if (json.stringValue('mode') == 'human') {
             model.mode = 'human'
