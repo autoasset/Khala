@@ -2,7 +2,7 @@ import FileIterator from './FileIterator';
 import IconIterator from './IconIterator';
 import SVGIterator from "./SVGIterator";
 import SVGFontIterator from "./SVGFontIterator";
-import FilePath from './FilePath';
+import FilePath from './FilePath/FilePath';
 import fs from 'fs';
 import IconTask from './Config/IconTask';
 import Config from './Config/Config';

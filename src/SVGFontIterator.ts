@@ -1,6 +1,6 @@
 import SVGFileIteratorNext from "./SVGFileIteratorNext";
 import fs from "fs/promises";
-import FilePath from "./FilePath";
+import FilePath from "./FilePath/FilePath";
 import Coverter from "./Config/Coverter";
 import CoverterOutputType from "./Config/CoverterOutputType";
 import CoverterType from "./Config/CoverterType";

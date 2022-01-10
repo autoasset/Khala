@@ -2,7 +2,7 @@
 import SVGFileIteratorNext from "./SVGFileIteratorNext";
 import svg2vectordrawable from "svg2vectordrawable";
 import fs from "fs/promises";
-import FilePath from "./FilePath";
+import FilePath from "./FilePath/FilePath";
 import { optimize } from "svgo"
 import Coverter from "./Config/Coverter";
 import CoverterOutput from "./Config/CoverterOutput";

@@ -1,7 +1,9 @@
 import fs from "fs/promises";
 import Path from "path";
+import FilePathScanResult from "./FilePathScanResult";
+import FilePathScanItemResult from './FilePathScanItemResult'
 
-class FilePath {
+export = class FilePath {
 
     static filename(name: string, extension: string): string {
         const basename = this.basename(name)
@@ -24,6 +26,30 @@ class FilePath {
         } else {
             return { name: full.substring(0, index), ext: full.substring(index+1, full.length), full: full }
         }
+    }
+
+    static async scan(input: string): Promise<FilePathScanResult> {
+        var result = new FilePathScanResult()
+        const stat = await fs.stat(input)
+        if (stat.isFile()) {
+            result.files.push(new FilePathScanItemResult(this.basename(input).name, input))
+            return result
+        } else if (stat.isDirectory()) {
+            for (const name of await fs.readdir(input)) {
+                const fullPath = `${input}${Path.sep}${name}`
+                const stat = await fs.stat(fullPath)
+                if (stat.isFile()) {
+                    result.files.push(new FilePathScanItemResult(name, fullPath))
+                } else if (stat.isDirectory()) {
+                    result.folders.push(new FilePathScanItemResult(name, fullPath))
+                } else {
+                    console.log(`[khala]: 无法识别的文件类型 ${fullPath}`)
+                }
+            }
+        } else {
+            console.log(`[khala]: 无法识别的文件类型 ${input}`)
+        }
+        return result
     }
 
     static async copyToFolder(folder: string, path: string, rename?: string) {
@@ -69,5 +95,3 @@ class FilePath {
     }
 
 }
-
-export = FilePath

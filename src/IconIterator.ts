@@ -1,6 +1,6 @@
 import FileIteratorNext from "./FileIteratorNext";
 import sharp from 'sharp';
-import FilePath from "./FilePath";
+import FilePath from "./FilePath/FilePath";
 import SVGFileIteratorNext from "./SVGFileIteratorNext";
 import Coverter from "./Config/Coverter";
 import CoverterType from "./Config/CoverterType";
@@ -47,32 +47,33 @@ class IconIterator implements FileIteratorNext {
                 }
                 return
             } 
+
+            if ((metadata.format == 'png' || metadata.format == 'jpg' || metadata.format == 'jpeg') == false) {
+                throw new Error(`[khala] 图片格式无法解析 ${path}`)
+            }
+
+            if (metadata.width == undefined || metadata.height == undefined) {
+                throw new Error(`[khala] 图片宽高存在问题 ${path}`)
+            }
             
-            if (metadata.format == 'png' || metadata.format == 'jpg' || metadata.format == 'jpeg') {
-                if (metadata.width == undefined || metadata.height == undefined) {
-                    return
+            for (const item of this.coverters[CoverterType.icon.rawValue]) {
+                const basename = FilePath.basename(path)
+                const output = FilePath.filePath(item.output.path, FilePath.filename(basename.name + item.output.icon_suffix, basename.ext))
+
+                if (item.icon_scale == item.output.icon_scale) {
+                    await FilePath.copyFile(path, output)
+                    continue
                 }
 
-                for (const item of this.coverters[CoverterType.icon.rawValue]) {
-                    const basename = FilePath.basename(path)
-                    const output = FilePath.filePath(item.output.path, FilePath.filename(basename.name + item.output.icon_suffix, basename.ext))
-    
-                    if (item.icon_scale == item.output.icon_scale) {
-                        await FilePath.copyFile(path, output)
-                        continue
-                    }
-
-                    await file
-                        .resize({
-                            width: Math.round(metadata.width / item.icon_scale * item.output.icon_scale),
-                            height: Math.round(metadata.height / item.icon_scale * item.output.icon_scale)
-                        })
-                        .toFile(output)
-                }
-                return
+                await file
+                    .resize({
+                        width: Math.round(metadata.width / item.icon_scale * item.output.icon_scale),
+                        height: Math.round(metadata.height / item.icon_scale * item.output.icon_scale)
+                    })
+                    .toFile(output)
             }
         } catch (error) {
-            console.log(`IconIterator: 无法解析 ${path}`)
+            console.log()
         }
     }
 
