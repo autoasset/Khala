@@ -67,6 +67,12 @@ class SVGIterator implements SVGFileIteratorNext {
             }
 
             const doc = new PDFDocument({
+                info: {
+                    Producer: 'linhay',
+                    Creator: 'khala',
+                    CreationDate: new Date(756230400000)
+                }, 
+                pdfVersion: '1.5',
                 size: [metadata.width, metadata.height]
             })
             const stream = require('fs').createWriteStream(path)

@@ -73,7 +73,7 @@ class IconIterator implements FileIteratorNext {
                     .toFile(output)
             }
         } catch (error) {
-            console.log()
+            console.log(error)
         }
     }
 
