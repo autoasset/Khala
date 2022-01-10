@@ -2,12 +2,12 @@
 import SVGFileIteratorNext from "./SVGFileIteratorNext";
 import svg2vectordrawable from "svg2vectordrawable";
 import fs from "fs/promises";
-import FilePath from "./FilePath/FilePath";
+import FilePath from "../FilePath/FilePath";
 import { optimize } from "svgo"
-import Coverter from "./Config/Coverter";
-import CoverterOutput from "./Config/CoverterOutput";
-import CoverterOutputType from "./Config/CoverterOutputType";
-import CoverterType from "./Config/CoverterType";
+import Coverter from "../Config/Coverter";
+import CoverterOutput from "../Config/CoverterOutput";
+import CoverterOutputType from "../Config/CoverterOutputType";
+import CoverterType from "../Config/CoverterType";
 
 class SVGIterator implements SVGFileIteratorNext {
 

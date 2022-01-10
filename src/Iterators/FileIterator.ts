@@ -1,13 +1,13 @@
-import FilePath from "./FilePath/FilePath";
+import FilePath from "../FilePath/FilePath";
 import FileIteratorNext from "./FileIteratorNext";
 import Path from "path";
 import * as fs from "fs/promises";
-import IconTask from "./Config/IconTask";
-import Coverter from "./Config/Coverter";
-import CoverterType from "./Config/CoverterType";
-import CoverterOutputType from "./Config/CoverterOutputType";
-import { ReportHelper } from "./ReportHelper";
-import FilePathScanItemResult from './FilePath/FilePathScanItemResult'
+import IconTask from "../Config/IconTask";
+import Coverter from "../Config/Coverter";
+import CoverterType from "../Config/CoverterType";
+import CoverterOutputType from "../Config/CoverterOutputType";
+import { ReportHelper } from "../ReportHelper";
+import FilePathScanItemResult from '../FilePath/FilePathScanItemResult'
 
 class FileIterator {
 

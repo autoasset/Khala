@@ -1,9 +1,9 @@
 import FileIteratorNext from "./FileIteratorNext";
 import sharp from 'sharp';
-import FilePath from "./FilePath/FilePath";
+import FilePath from "../FilePath/FilePath";
 import SVGFileIteratorNext from "./SVGFileIteratorNext";
-import Coverter from "./Config/Coverter";
-import CoverterType from "./Config/CoverterType";
+import Coverter from "../Config/Coverter";
+import CoverterType from "../Config/CoverterType";
 
 class IconIterator implements FileIteratorNext {
 
