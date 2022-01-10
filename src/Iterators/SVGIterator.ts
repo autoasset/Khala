@@ -8,6 +8,10 @@ import Coverter from "../Config/Coverter";
 import CoverterOutput from "../Config/CoverterOutput";
 import CoverterOutputType from "../Config/CoverterOutputType";
 import CoverterType from "../Config/CoverterType";
+import sharp from 'sharp';
+import SVGtoPDF from 'svg-to-pdfkit'
+import PDFDocument from 'pdfkit'
+import console from "console";
 
 class SVGIterator implements SVGFileIteratorNext {
 
@@ -46,9 +50,32 @@ class SVGIterator implements SVGFileIteratorNext {
     }
 
     private async pdf(basename: string, output: CoverterOutput, buffer: Buffer, filepath: string) {
-        const filename = FilePath.filename(basename, 'pdf')
-        const path = FilePath.filePath(output.path, filename)
-        require('shelljs').exec('inkscape ' + filepath + ' --export-type=pdf --export-filename=' + path)
+        try {
+            const filename = FilePath.filename(basename, 'pdf')
+            const path = FilePath.filePath(output.path, filename)
+
+            const file = sharp(buffer)
+            const metadata = await file.metadata()
+            if (metadata.format != "svg") {
+                return
+            }
+            if (!metadata.width) {
+                return
+            }
+            if (!metadata.height) {
+                return
+            }
+
+            const doc = new PDFDocument({
+                size: [metadata.width, metadata.height]
+            })
+            const stream = require('fs').createWriteStream(path)
+            SVGtoPDF(doc, buffer.toString(), 0, 0);
+            doc.pipe(stream);
+            doc.end();
+        } catch (error) {
+            console.log(`[khala] error: ${error}`)
+        }
     }
 
     private async vectordrawable(basename: string, output: CoverterOutput, buffer: Buffer, filepath: string) {
