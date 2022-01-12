@@ -1,3 +1,9 @@
-./assets
-./config.json
-./config.yaml
+assets
+config.json
+config.yaml
+lib
+node_modules
+products
+coverter
+report
+yarn-error.log

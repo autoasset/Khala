@@ -3,7 +3,7 @@ import SVGFileIteratorNext from "./SVGFileIteratorNext";
 import svg2vectordrawable from "svg2vectordrawable";
 import fs from "fs/promises";
 import FilePath from "../FilePath/FilePath";
-import { optimize } from "svgo"
+import { optimize, OptimizedSvg } from "svgo"
 import Coverter from "../Config/Coverter";
 import CoverterOutput from "../Config/CoverterOutput";
 import CoverterOutputType from "../Config/CoverterOutputType";
@@ -125,7 +125,7 @@ class SVGIterator implements SVGFileIteratorNext {
                 }
             ],
             js2svg: { pretty: true }
-        })
+        }) as OptimizedSvg
         return Buffer.from(result.data, 'utf8');
     }
 
@@ -138,7 +138,7 @@ class SVGIterator implements SVGFileIteratorNext {
                 return result
             }
         }
-        const result = Buffer.from(optimize(buffer, {
+        const result = Buffer.from((optimize(buffer, {
             path: undefined,
             plugins: [
                 "removeDoctype",
@@ -161,7 +161,7 @@ class SVGIterator implements SVGFileIteratorNext {
                 "removeScriptElement"
             ],
             js2svg: { pretty: true }
-        }).data, 'utf8');
+        }) as OptimizedSvg).data, 'utf8');
 
         await this.cache.cache(result, cacheKey, option)
         return result
