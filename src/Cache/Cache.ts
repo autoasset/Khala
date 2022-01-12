@@ -11,7 +11,7 @@ export = class Cache {
     name: string
 
     constructor(name?: string) {
-        this.name = name ?? 'default'
+        this.name = name ?? 'cache/default'
         this.path = FilePath.filePath(this.basePath, this.name)
         FilePath.createFolder(this.path)
     }
