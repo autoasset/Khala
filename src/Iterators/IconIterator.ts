@@ -80,7 +80,7 @@ class IconIterator implements FileIteratorNext {
                 const width = Math.round(metadata.width / item.icon_scale * item.output.icon_scale)
                 const height = Math.round(metadata.height / item.icon_scale * item.output.icon_scale)
 
-                this.cache.useCache(buffer, width.toString() + '-' + height.toString(), output, async (complete) => {
+                this.cache.useCache(buffer, 'icon' + width.toString() + '-' + height.toString(), output, async (complete) => {
                     await file.resize({ width: width, height: height }).toFile(output)
                     complete()
                 })
