@@ -55,7 +55,10 @@ export = class Cache {
         const cacheKey = key
         const newIcon = await this.value(cacheKey, option)
         if (newIcon) {
-            await FilePath.write(output, newIcon)
+            const data = await FilePath.data(newIcon)
+            if (data) {
+                await FilePath.write(output, data)
+            }
             return
         }
         cacheFileBlock(async () => {
