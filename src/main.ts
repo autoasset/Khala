@@ -8,6 +8,7 @@ import IconTask from './Config/IconTask';
 import Config from './Config/Config';
 import YAML from 'js-yaml'
 import { ReportHelper } from './ReportHelper';
+import Temp from './Cache/Temp';
 
 export = class Main {
 
@@ -31,9 +32,9 @@ export = class Main {
     }
 
     async run() {
-       for (const item of this.config.tasks) {
-             await this.runTask(item)
-       }
+        for (const item of this.config.tasks) {
+            await this.runTask(item)
+        }
     }
 
     async runTask(task: IconTask) {
