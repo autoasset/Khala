@@ -8,7 +8,6 @@ import IconTask from './Config/IconTask';
 import Config from './Config/Config';
 import YAML from 'js-yaml'
 import { ReportHelper } from './ReportHelper';
-import Temp from './Cache/Temp';
 
 export = class Main {
 
