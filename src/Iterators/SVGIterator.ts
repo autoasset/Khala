@@ -103,15 +103,16 @@ class SVGIterator implements SVGFileIteratorNext {
     private async vectordrawable(basename: string, output: CoverterOutput, buffer: Buffer, cacheKey: string) {
         const filename = FilePath.filename(basename, 'xml')
         const path = FilePath.filePath(output.path, filename)
-        await this.cache.useCacheByKey(cacheKey, 'vectordrawable', path, (async () => {
-            const xml = await svg2vectordrawable(buffer.toString(), {
+        // await this.cache.useCacheByKey(cacheKey, 'vectordrawable', path, (async () => {
+            let xml = await svg2vectordrawable(buffer.toString(), {
                 // 数值精度，默认为 2
                 floatPrecision: 3,
-                // 添加 XML 文档声明标签，默认为 false
-                xmlTag: true
             })
+            if (xml.indexOf("Color=") == -1) {
+                xml = xml.replace('android:pathData=', "android:fillColor=\"#FFFFFFFF\"\n        android:pathData=")
+            }
             await fs.writeFile(path, xml)
-        }))
+        // }))
     }
 
     private async fixedMissiPtUnits(buffer: Buffer): Promise<Buffer> {

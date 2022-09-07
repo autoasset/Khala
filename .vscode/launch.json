@@ -14,7 +14,8 @@
             "program": "${workspaceFolder}/lib/app-main.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "runtimeExecutable": "/opt/homebrew/bin/node"
         }
     ]
 }
