@@ -15,7 +15,7 @@
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ],
-            "runtimeExecutable": "/opt/homebrew/bin/node"
+            "runtimeExecutable": "/opt/homebrew/opt/node@16/bin/node"
         }
     ]
 }
