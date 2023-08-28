@@ -20,6 +20,7 @@ tasks:
     output:
       path: "./products/ios/icon"
   - type: icon
+    name: android@3x
     icon_scale: 3
     output:
       minimum_quality: 0.7
@@ -27,11 +28,13 @@ tasks:
       path: "./products/android/icon/x2"
       icon_scale: 2
   - type: icon
+    name: android@3x
     icon_scale: 3
     enable_compression_minimum_size: 1024
     output:
       path: "./products/android/icon/x3"
   - type: icon
+    name: android-smart_mixed@2x
     icon_scale: 3
     output:
       type: android_smart_mixed
@@ -40,6 +43,7 @@ tasks:
       path: "./products/android/webp/x2"
       icon_scale: 2
   - type: icon
+    name: android-smart_mixed@3x
     icon_scale: 3
     enable_compression_minimum_size: 1024
     output:

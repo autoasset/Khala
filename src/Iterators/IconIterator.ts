@@ -58,31 +58,31 @@ class IconContext {
         return item
     }
 
-     async icon(): Promise<IconBuffer> {
+    async icon(): Promise<IconBuffer> {
         if (this.format == 'jpeg' || this.format == 'jpg') {
             return this.jpeg()
         } else if (this.format == 'png') {
-            return await this.png();       
+            return await this.png();
         } else {
             return new IconBuffer(await this.file.toBuffer(), this.format)
         }
     }
 
-     async jpeg(): Promise<IconBuffer> {
+    async jpeg(): Promise<IconBuffer> {
         const kind: keyof sharp.FormatEnum = 'jpg'
         const buffer = await this.cache.tryGet(this.cache_key, kind + '-' + this.cache_option, async () => {
             var buffer = await this.file
-            .jpeg({ 
-                mozjpeg: true
-            })
-            .toBuffer()
+                .jpeg({
+                    mozjpeg: true
+                })
+                .toBuffer()
 
             if (buffer.length <= this.coverter.enable_compression_minimum_size) {
                 return buffer
-            } 
+            }
 
             return await this.file
-                .jpeg({ 
+                .jpeg({
                     mozjpeg: true,
                     quality: this.coverter.output.maximum_quality * 100
                 })
@@ -91,11 +91,11 @@ class IconContext {
         return new IconBuffer(buffer, kind)
     }
 
-     async webp(): Promise<IconBuffer> {
+    async webp(): Promise<IconBuffer> {
         const kind: keyof sharp.FormatEnum = 'webp'
         const buffer = await this.cache.tryGet(this.cache_key, kind + '-' + this.cache_option, async () => {
             var buffer = await this.file
-                .webp({ 
+                .webp({
                     nearLossless: true
                 })
                 .toBuffer()
@@ -114,7 +114,7 @@ class IconContext {
         return new IconBuffer(buffer, kind)
     }
 
-     async png(): Promise<IconBuffer> {
+    async png(): Promise<IconBuffer> {
         const kind: keyof sharp.FormatEnum = 'png'
         const buffer = await this.cache.tryGet(this.cache_key, kind + '-' + this.cache_option, async () => {
             const buffer = await this.file.png().toBuffer();
@@ -126,7 +126,7 @@ class IconContext {
                 plugins: [
                     imageminPngquant({
                         quality: [
-                            this.coverter.output.minimum_quality, 
+                            this.coverter.output.minimum_quality,
                             this.coverter.output.maximum_quality
                         ]
                     })
@@ -134,7 +134,7 @@ class IconContext {
             })
         })
         return new IconBuffer(buffer, kind)
-    }   
+    }
 
 }
 
@@ -227,10 +227,11 @@ class IconIterator implements FileIteratorNext {
                     metadata.format,
                     coverter,
                     this.cache,
-                    cache_option, 
+                    cache_option,
                     cache_key
-                    )
+                )
 
+                var icon: IconBuffer
                 if (coverter.output.type == CoverterOutputType.android_smart_mixed) {
                     var list: IconBuffer[] = []
                     list.push(await context.webp())
@@ -238,24 +239,28 @@ class IconIterator implements FileIteratorNext {
                     if (stats.isOpaque) {
                         list.push(await context.jpeg())
                     }
-                    const item: IconBuffer = IconContext.min(list)
-                    const output = FilePath.filePath(coverter.output.path, FilePath.filename(basename.name + coverter.output.icon_suffix, item.format))
-                    await FilePath.write(output, item.buffer)
+                    icon = IconContext.min(list)
                 } else if (coverter.output.type == CoverterOutputType.ios_smart_mixed) {
                     var list: IconBuffer[] = []
                     if (stats.isOpaque && ['jpg', 'jpeg'].indexOf(metadata.format) == -1) {
                         list.push(await context.jpeg())
-                    } 
+                    }
                     list.push(await context.png())
-                    const item: IconBuffer = IconContext.min(list)
-                    const output = FilePath.filePath(coverter.output.path, FilePath.filename(basename.name + coverter.output.icon_suffix, item.format))
-                    await FilePath.write(output, item.buffer) 
+                    icon = IconContext.min(list)
                 } else {
-                    var cached_icon = await context.icon()
-                    const output = FilePath.filePath(coverter.output.path, FilePath.filename(basename.name + coverter.output.icon_suffix, cached_icon.format))
-                    await FilePath.write(output, cached_icon.buffer)
+                    icon = await context.icon()
+
                 }
 
+                const filename = FilePath.filename(basename.name + coverter.output.icon_suffix, icon.format)
+                const output = FilePath.filePath(coverter.output.path, filename)
+                await FilePath.write(output, icon.buffer)
+                var message = "-> "
+                if (coverter.name) {
+                    message += coverter.name + ": "
+                }
+                message += FilePath.relativeCWD(output)
+                console.log(message)
             }
         } catch (error) {
             console.log(error)
