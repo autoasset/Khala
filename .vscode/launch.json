@@ -5,9 +5,9 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "运行",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -15,7 +15,7 @@
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ],
-            "runtimeExecutable": "/opt/homebrew/opt/node@16/bin/node"
+            "runtimeExecutable": "/opt/homebrew/bin/node"
         }
     ]
 }
