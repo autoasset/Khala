@@ -7,6 +7,7 @@ import CoverterOutputType from "../Config/CoverterOutputType";
 import Cache from "../Cache/Cache";
 import Temp from "../Cache/Temp";
 import sharp from "sharp";
+import imageminPngquant from "imagemin-pngquant";
 
 class IconBuffer {
     buffer: Buffer
@@ -115,18 +116,32 @@ class IconContext {
 
     async png(): Promise<IconBuffer> {
         const kind: keyof sharp.FormatEnum = 'png'
-        const buffer = await this.cache.tryGet(this.cache_key, kind + '-' + this.cache_option, async () => {
+        const buffer = await this.cache.tryGet(this.cache_key, kind + '-v2-' + this.cache_option, async () => {
             const buffer = await this.file.png().toBuffer();
 
             if (this.coverter.enable_compression_minimum_size <= 0 || buffer.length <= this.coverter.enable_compression_minimum_size) {
                 return buffer
             }
 
-            return await this.file
-            .png({
-                quality: this.coverter.output.maximum_quality * 100
-            })
-            .toBuffer()
+            if (this.coverter.enable_compression_imagemin_pngquant) {
+                const imagemin = (await import('imagemin')).buffer;
+                return await imagemin(buffer, {
+                    plugins: [
+                        imageminPngquant({
+                            quality: [
+                                this.coverter.output.minimum_quality,
+                                this.coverter.output.maximum_quality
+                            ]
+                        })
+                    ]
+            }) 
+        } else {
+                return await this.file
+                .png({
+                    quality: this.coverter.output.maximum_quality * 100
+                })
+                .toBuffer()
+            }
         })
         return new IconBuffer(buffer, kind)
     }
