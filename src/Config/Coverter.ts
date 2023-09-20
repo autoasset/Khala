@@ -19,8 +19,8 @@ export = class Coverter {
         this.type = CoverterType.init(json.stringValue("type")) 
         this.icon_scale = json.numberValue("icon_scale", 3)
         this.name = json.string('name')
-        this.enable_compression_minimum_size = json.numberValue("enable_compression_minimum_size", 2048)
-        this.enable_compression_imagemin_pngquant = json.booleanValue("enable_compression_imagemin_pngquant", true)
+        this.enable_compression_minimum_size = json.numberValue("enable_compression_minimum_size", 0)
+        this.enable_compression_imagemin_pngquant = json.booleanValue("enable_compression_imagemin_pngquant", false)
         this.output = new CoverterOutput(json.node("output"), this.type.rawValue, this.icon_scale)
     }
 }

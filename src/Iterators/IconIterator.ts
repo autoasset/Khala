@@ -68,6 +68,14 @@ class IconContext {
         }
     }
 
+    async isNotCompression(buffer: Buffer): Promise<boolean> {
+        if (this.coverter.enable_compression_minimum_size < 0 || buffer.length <= this.coverter.enable_compression_minimum_size) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     async jpeg(): Promise<IconBuffer> {
         const kind: keyof sharp.FormatEnum = 'jpg'
         const buffer = await this.cache.tryGet(this.cache_key, kind + '-' + this.cache_option, async () => {
@@ -77,7 +85,7 @@ class IconContext {
                 })
                 .toBuffer()
 
-            if (this.coverter.enable_compression_minimum_size <= 0 || buffer.length <= this.coverter.enable_compression_minimum_size) {
+            if (await this.isNotCompression(buffer)) {
                 return buffer
             }
 
@@ -100,16 +108,16 @@ class IconContext {
                 })
                 .toBuffer()
 
-            if (this.coverter.enable_compression_minimum_size <= 0 || buffer.length <= this.coverter.enable_compression_minimum_size) {
-                return buffer
-            } else {
+                if (await this.isNotCompression(buffer)) {
+                    return buffer
+                }
+
                 return await this.file
                     .webp({
                         nearLossless: true,
                         quality: this.coverter.output.maximum_quality * 100
                     })
                     .toBuffer()
-            }
         })
         return new IconBuffer(buffer, kind)
     }
@@ -119,7 +127,7 @@ class IconContext {
         const buffer = await this.cache.tryGet(this.cache_key, kind + '-v2-' + this.cache_option, async () => {
             const buffer = await this.file.png().toBuffer();
 
-            if (this.coverter.enable_compression_minimum_size <= 0 || buffer.length <= this.coverter.enable_compression_minimum_size) {
+            if (await this.isNotCompression(buffer)) {
                 return buffer
             }
 
