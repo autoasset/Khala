@@ -231,7 +231,12 @@ class IconIterator implements FileIteratorNext {
                 const basename = FilePath.basename(path)
                 const width = Math.round(metadata.width / coverter.icon_scale * coverter.output.icon_scale)
                 const height = Math.round(metadata.height / coverter.icon_scale * coverter.output.icon_scale)
-                file = file.resize({ width: width, height: height })
+
+                if (width > height) {
+                    file = file.resize({ width: width })
+                } else {
+                    file = file.resize({ height: height })
+                }
 
                 const cache_key = this.cache.key(buffer)
                 const cache_option = [
